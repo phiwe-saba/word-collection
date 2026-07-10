@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35825.156 d17.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "word-collection", "word-collection\word-collection.csproj", "{AECDDFE6-157E-4870-801E-2F42B8385270}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AECDDFE6-157E-4870-801E-2F42B8385270}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AECDDFE6-157E-4870-801E-2F42B8385270}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AECDDFE6-157E-4870-801E-2F42B8385270}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AECDDFE6-157E-4870-801E-2F42B8385270}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BBC65B8D-3888-42B4-99EC-D12B3B50C21F}
+	EndGlobalSection
+EndGlobal
