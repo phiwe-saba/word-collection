@@ -6,9 +6,10 @@ namespace word_collection.Repository.Interface
     public interface IWordCollectionRepository
     {
         Task<List<WordCollection>> GetAllWordsAsync();
-        Task<WordCollection> GetWordByIdAsync(int id);
-        Task<WordCollection> GetWordByName(string word);
+        Task<WordCollection?> GetWordByIdAsync(int id);
+        Task<WordCollection?> GetWordByNameAsync(string word);
         Task<WordCollection> CreateWordAsync(WordCollection wordCollection);
-
+        Task<WordCollection?> UpdateWordCollectionAsync(int id, WordCollection wordCollection);
+        Task<bool> DeleteWordAsync(int id);
     }
 }

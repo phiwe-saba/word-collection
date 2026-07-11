@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.EntityFrameworkCore;
 using word_collection.Data;
 using word_collection.Model;
 using word_collection.Repository.Interface;
@@ -26,11 +27,39 @@ namespace word_collection.Repository.Implementation
 
                 _wordCollectionDbContext.WordCollections.Add(entity);
                 await _wordCollectionDbContext.SaveChangesAsync();
+
+                _logger.LogInformation($"Successfully created a new record: {entity}");
                 return entity;
             }
             catch(Exception ex)
             {
-                _logger.LogError(ex, "Failed to create new word");
+                _logger.LogError(ex, "Failed to create new record");
+                throw;
+            }
+        }
+
+        public async Task<bool> DeleteWordAsync(int id)
+        {
+            try
+            {
+                var value = await _wordCollectionDbContext.WordCollections.FindAsync(id);
+
+                if (value == null) 
+                {
+                    _logger.LogInformation($"Word with id: {id} was not found");
+                    return false;
+                }
+
+                _wordCollectionDbContext.WordCollections.Remove(value);
+                await _wordCollectionDbContext.SaveChangesAsync();
+
+                _logger.LogInformation($"Successfully deleted word with id: {id}");
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Failed to delete word with id: {id}.");
                 throw;
             }
         }
@@ -39,7 +68,16 @@ namespace word_collection.Repository.Implementation
         {
             try
             {
-                return await _wordCollectionDbContext.WordCollections.ToListAsync();
+                var result = await _wordCollectionDbContext.WordCollections.ToListAsync();
+
+                _logger.LogInformation($"Retrieved words {result}");
+
+                if (result is null)
+                {
+                    _logger.LogInformation("No words exist in the database");
+                }
+
+                return result;
             }
             catch (Exception ex)
             {
@@ -48,11 +86,20 @@ namespace word_collection.Repository.Implementation
             }
         }
 
-        public async Task<WordCollection> GetWordByIdAsync(int id)
+        public async Task<WordCollection?> GetWordByIdAsync(int id)
         {
             try
             {
-                return await _wordCollectionDbContext.WordCollections.FindAsync(id);
+                var result = await _wordCollectionDbContext.WordCollections.FindAsync(id);
+
+                _logger.LogInformation($"Retrieved word with id: {result}");
+
+                if (result is null)
+                {
+                    _logger.LogInformation("Results value is null");
+                }
+
+                return result;
             }
             catch (Exception ex)
             {
@@ -61,14 +108,52 @@ namespace word_collection.Repository.Implementation
             }
         }
 
-        public async Task<WordCollection> GetWordByName(string word)
+        public async Task<WordCollection?> GetWordByNameAsync(string word)
         {
             try
             {
-                return await _wordCollectionDbContext.WordCollections.FindAsync(word);
+                var result = await _wordCollectionDbContext.WordCollections.FirstOrDefaultAsync(x => x.Word == word);
+
+                _logger.LogInformation($"Retrieved word: {result}");
+
+                if (result is null)
+                {
+                    _logger.LogInformation($"No word found with name: {word}");
+                }
+
+                return result; 
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, $"Failed to find word with name: {word}");
+                throw;
+            }
+        }
+
+        public async Task<WordCollection?> UpdateWordCollectionAsync(int id, WordCollection wordCollection)
+        {
+            try
+            {
+                var entity = await _wordCollectionDbContext.WordCollections.FindAsync(id);
+
+                if (entity == null)
+                {
+                    _logger.LogInformation($"Record with id {id} not found");
+                    return null;
+                }
+
+                entity.Word = wordCollection.Word;
+                entity.WordType = wordCollection.WordType;
+
+                await _wordCollectionDbContext.SaveChangesAsync();
+
+                _logger.LogInformation($"Updated record with id {id} successfully");
+
+                return entity;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Failed to update record with id: {id}");
                 throw;
             }
         }

@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Serilog;
+using Serilog.Debugging;
 using word_collection.Data;
 using word_collection.Orchestration.Implementation;
 using word_collection.Orchestration.Interface;
@@ -8,6 +10,11 @@ using word_collection.Repository.Interface;
 
 var builder = WebApplication.CreateBuilder(args);
 
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration) 
+    .CreateLogger();
+
+builder.Host.UseSerilog();
 // Add services to the container.
 
 builder.Services.AddControllers();

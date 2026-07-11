@@ -23,6 +23,20 @@ namespace word_collection.Orchestration.Implementation
             }
             catch(Exception ex)
             {
+                _logger.LogError(ex, "Failed to create new word inside CreateWordAsync() method");
+                throw;
+            }
+        }
+
+        public async Task<bool> DeleteWordAsync(int id)
+        {
+            try
+            {
+                return await _wordCollectionRepository.DeleteWordAsync(id);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to delete record insode DeleteWordAsync()");
                 throw;
             }
         }
@@ -35,7 +49,46 @@ namespace word_collection.Orchestration.Implementation
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Failed to retrieve words inside GetAllWordsAsync");
+                _logger.LogError(ex, "Failed to retrieve words inside GetAllWordsAsync() method");
+                throw;
+            }
+        }
+
+        public Task<WordCollection> GetWordByIdAsync(int id)
+        {
+            try
+            {
+                return _wordCollectionRepository.GetWordByIdAsync(id);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occured inside GetWordByIdAsync() meethod");
+                throw;
+            }
+        }
+
+        public Task<WordCollection> GetWordByNameAsync(string word)
+        {
+            try
+            {
+                return _wordCollectionRepository.GetWordByNameAsync(word);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occured inside GetWordByNameAsync() method");
+                throw;
+            }
+        }
+
+        public async Task<WordCollection?> UpdateWordCollectionAsync(int id, WordCollection wordCollection)
+        {
+            try
+            {
+                return await _wordCollectionRepository.UpdateWordCollectionAsync(id, wordCollection);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occured inside UpdateWordCollectionAsync() method");
                 throw;
             }
         }
