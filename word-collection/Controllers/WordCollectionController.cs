@@ -19,7 +19,7 @@ namespace word_collection.Controllers
             _logger = logger;
         }
 
-        [HttpPost]
+        [HttpPost("createWord")]
         public async Task<ActionResult<WordCollection>> CreatWordAsync(WordCollection wordCollection)
         {
             try
@@ -34,7 +34,7 @@ namespace word_collection.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpGet("getAllWords")]
         public async Task<ActionResult<List<WordCollection>>> GetAllWordsAsync()
         {
             try
@@ -49,7 +49,7 @@ namespace word_collection.Controllers
             }
         }
 
-        [HttpGet("id")]
+        [HttpGet("getWordById/{id}")]
         public async Task<ActionResult> GetWordByIdAsync(int id)
         {
             try
@@ -64,7 +64,7 @@ namespace word_collection.Controllers
             }
         }
 
-        [HttpGet("name")]
+        [HttpGet("getWordByName/{name}")]
         public async Task<ActionResult> GetWordByNameAsync(string name)
         {
             try
@@ -79,7 +79,7 @@ namespace word_collection.Controllers
             }
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("updateWordById/{id}")]
         public async Task<ActionResult> UpdateWordCollectionAsync(int id, WordCollection wordCollection)
         {
             try
@@ -94,7 +94,7 @@ namespace word_collection.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("deleteWordById{id}")]
         public async Task<IActionResult> DeleteWordAsync(int id)
         {
             try
