@@ -8,5 +8,14 @@ namespace word_collection.Data
         public WordCollectionDbContext(DbContextOptions<WordCollectionDbContext> options) : base(options) { }
 
         public DbSet<WordCollection> WordCollections { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<WordCollection>()
+                .Property(w => w.WordType)
+                .HasConversion<string>();
+
+            base.OnModelCreating(modelBuilder);
+        }
     }
 }

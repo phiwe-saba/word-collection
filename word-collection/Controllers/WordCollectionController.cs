@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using word_collection.DTOs;
 using word_collection.Model;
 using word_collection.Orchestration.Implementation;
 using word_collection.Orchestration.Interface;
@@ -19,12 +20,27 @@ namespace word_collection.Controllers
             _logger = logger;
         }
 
-        [HttpPost("createWord")]
-        public async Task<ActionResult<WordCollection>> CreatWordAsync(WordCollection wordCollection)
+        [HttpGet("getWordById/{id}", Name = "GetWordById")]
+        public async Task<ActionResult<WordCollection>> GetWordByIdAsync(int id)
         {
             try
             {
-                var results = await _wordCollectionOrchestration.CreateWordAsync(wordCollection);
+                var result = await _wordCollectionOrchestration.GetWordByIdAsync(id);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occured whilst retrieving data");
+                return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected error occured.");
+            }
+        }
+
+        [HttpPost("createWord")]
+        public async Task<ActionResult<WordCollection>> CreatWordAsync([FromBody] CreateWordRequest wordRequest)
+        {
+            try
+            {
+                var results = await _wordCollectionOrchestration.CreateWordAsync(wordRequest);
                 return Ok(results);
             }
             catch(Exception ex)
@@ -45,21 +61,6 @@ namespace word_collection.Controllers
             catch(Exception ex)
             {
                 _logger.LogError(ex, "Error occured whilst retrieving all the words.");
-                return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected error occured.");
-            }
-        }
-
-        [HttpGet("getWordById/{id}")]
-        public async Task<ActionResult> GetWordByIdAsync(int id)
-        {
-            try
-            {
-                var result = await _wordCollectionOrchestration.GetWordByIdAsync(id);
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error occured whilst retrieving data");
                 return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected error occured.");
             }
         }
@@ -94,7 +95,7 @@ namespace word_collection.Controllers
             }
         }
 
-        [HttpDelete("deleteWordById{id}")]
+        [HttpDelete("deleteWordById/{id}")]
         public async Task<IActionResult> DeleteWordAsync(int id)
         {
             try
@@ -112,6 +113,21 @@ namespace word_collection.Controllers
             {
                 _logger.LogError(ex, "Error occured whilst deleting record");
                 return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected error occured");
+            }
+        }
+
+        [HttpGet("getWordTypes")]
+        public ActionResult<IEnumerable<string>> GetWordTypes()
+        {
+            try
+            {
+                var result = _wordCollectionOrchestration.GetWordTypes();
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to retrieve word types.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected error occured.");
             }
         }
     }

@@ -6,6 +6,6 @@ namespace word_collection.Model
     {
         public int Id { get; set; }
         public string Word { get; set; }
-        public string WordType { get; set; }
+        public WordType WordType { get; set; }
     }
 }

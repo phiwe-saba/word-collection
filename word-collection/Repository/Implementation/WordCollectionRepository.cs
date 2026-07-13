@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using word_collection.Data;
+using word_collection.DTOs;
 using word_collection.Model;
 using word_collection.Repository.Interface;
 
@@ -17,13 +18,13 @@ namespace word_collection.Repository.Implementation
             _logger = logger;
         }
 
-        public async Task<WordCollection> CreateWordAsync(WordCollection wordCollection)
+        public async Task<WordCollection> CreateWordAsync(CreateWordRequest wordRequest)
         {
             try
             {
                 var entity = new WordCollection();
-                entity.Word = wordCollection.Word;
-                entity.WordType = wordCollection.WordType;
+                entity.Word = wordRequest.Word;
+                entity.WordType = wordRequest.WordType;
 
                 _wordCollectionDbContext.WordCollections.Add(entity);
                 await _wordCollectionDbContext.SaveChangesAsync();
@@ -64,7 +65,7 @@ namespace word_collection.Repository.Implementation
             }
         }
 
-        public async Task<List<WordCollection>> GetAllWordsAsync()
+        public async Task<IEnumerable<WordCollection>> GetAllWordsAsync()
         {
             try
             {

@@ -9,7 +9,7 @@
         Pronoun,
         Preposition,
         Interjection,
-        Conjuction,
+        Conjunction,
         Determiner
     }
 }

@@ -1,4 +1,6 @@
-﻿using word_collection.Model;
+﻿using word_collection.DTOs;
+using word_collection.Enums;
+using word_collection.Model;
 using word_collection.Orchestration.Interface;
 using word_collection.Repository.Interface;
 
@@ -15,11 +17,11 @@ namespace word_collection.Orchestration.Implementation
             _logger = logger;
         }
 
-        public async Task<WordCollection> CreateWordAsync(WordCollection wordCollection)
+        public async Task<WordCollection> CreateWordAsync(CreateWordRequest wordRequest)
         {
             try
             {
-                return await _wordCollectionRepository.CreateWordAsync(wordCollection);
+                return await _wordCollectionRepository.CreateWordAsync(wordRequest);
             }
             catch(Exception ex)
             {
@@ -41,7 +43,7 @@ namespace word_collection.Orchestration.Implementation
             }
         }
 
-        public Task<List<WordCollection>> GetAllWordsAsync()
+        public Task<IEnumerable<WordCollection>> GetAllWordsAsync()
         {
             try
             {
@@ -78,6 +80,11 @@ namespace word_collection.Orchestration.Implementation
                 _logger.LogError(ex, "Error occured inside GetWordByNameAsync() method");
                 throw;
             }
+        }
+
+        public IEnumerable<string> GetWordTypes()
+        {
+            return Enum.GetNames(typeof(WordType));
         }
 
         public async Task<WordCollection?> UpdateWordCollectionAsync(int id, WordCollection wordCollection)
