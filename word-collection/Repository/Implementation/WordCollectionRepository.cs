@@ -133,35 +133,53 @@ namespace word_collection.Repository.Implementation
 
         public async Task<PagedResponse<WordCollection>> SearchWordsAsync(WordFilterRequest request)
         {
-            IQueryable<WordCollection> query = _wordCollectionDbContext.WordCollections;
-
-            if (!string.IsNullOrWhiteSpace(request.Word))
+            try
             {
-                query = query.Where(x =>
-                    x.Word.Contains(request.Word));
+                _logger.LogInformation($"Searching words. Word: {request.Word}, WordType: {request.WordType}, PageNumber: {request.PageNumber}, PageSize: {request.PageSize}");
+            
+                IQueryable<WordCollection> query = _wordCollectionDbContext.WordCollections;
+
+                if (!string.IsNullOrWhiteSpace(request.Word))
+                {
+                    _logger.LogInformation("Applying word filter: {Word}", request.Word);
+
+                    query = query.Where(x =>
+                        x.Word.Contains(request.Word));
+                }
+
+                if (request.WordType.HasValue)
+                {
+                    _logger.LogInformation("Applying word type filter: {WordType}", request.WordType);
+
+                    query = query.Where(x =>
+                        x.WordType == request.WordType.Value);
+                }
+
+                int totalRecords = await query.CountAsync();
+
+                _logger.LogInformation($"Found {totalRecords} matching records.");
+
+                List<WordCollection> data = await query
+                    .OrderBy(x => x.Word)
+                    .Skip((request.PageNumber - 1) * request.PageSize)
+                    .Take(request.PageSize)
+                    .ToListAsync();
+
+                _logger.LogInformation($"Returning {data.Count} records for page {request.PageNumber}");
+
+                return new PagedResponse<WordCollection>
+                {
+                    Data = data,
+                    TotalRecords = totalRecords,
+                    PageNumber = request.PageNumber,
+                    PageSize = request.PageSize
+                };
             }
-
-            if (request.WordType.HasValue)
+            catch (Exception ex)
             {
-                query = query.Where(x =>
-                    x.WordType == request.WordType.Value);
+                _logger.LogError(ex, $"Failed to search words.");
+                throw;
             }
-
-            int totalRecords = await query.CountAsync();
-
-            List<WordCollection> data = await query
-                .OrderBy(x => x.Word)
-                .Skip((request.PageNumber - 1) * request.PageSize)
-                .Take(request.PageSize)
-                .ToListAsync();
-
-            return new PagedResponse<WordCollection>
-            {
-                Data = data,
-                TotalRecords = totalRecords,
-                PageNumber = request.PageNumber,
-                PageSize = request.PageSize
-            };
         }
 
         public async Task<WordCollection?> UpdateWordCollectionAsync(int id, WordCollection wordCollection)
