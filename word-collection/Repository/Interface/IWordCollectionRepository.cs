@@ -12,5 +12,6 @@ namespace word_collection.Repository.Interface
         Task<WordCollection> CreateWordAsync(CreateWordRequest wordRequest);
         Task<WordCollection?> UpdateWordCollectionAsync(int id, WordCollection wordCollection);
         Task<bool> DeleteWordAsync(int id);
+        Task<PagedResponse<WordCollection>> SearchWordsAsync(WordFilterRequest request);
     }
 }

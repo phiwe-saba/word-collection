@@ -87,6 +87,19 @@ namespace word_collection.Orchestration.Implementation
             return Enum.GetNames(typeof(WordType));
         }
 
+        public Task<PagedResponse<WordCollection>> SearchWordsAsync(WordFilterRequest request)
+        {
+            try
+            {
+                return _wordCollectionRepository.SearchWordsAsync(request);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occured inside SearchWordsAsync() method");
+                throw;
+            }
+        }
+
         public async Task<WordCollection?> UpdateWordCollectionAsync(int id, WordCollection wordCollection)
         {
             try

@@ -131,6 +131,39 @@ namespace word_collection.Repository.Implementation
             }
         }
 
+        public async Task<PagedResponse<WordCollection>> SearchWordsAsync(WordFilterRequest request)
+        {
+            IQueryable<WordCollection> query = _wordCollectionDbContext.WordCollections;
+
+            if (!string.IsNullOrWhiteSpace(request.Word))
+            {
+                query = query.Where(x =>
+                    x.Word.Contains(request.Word));
+            }
+
+            if (request.WordType.HasValue)
+            {
+                query = query.Where(x =>
+                    x.WordType == request.WordType.Value);
+            }
+
+            int totalRecords = await query.CountAsync();
+
+            List<WordCollection> data = await query
+                .OrderBy(x => x.Word)
+                .Skip((request.PageNumber - 1) * request.PageSize)
+                .Take(request.PageSize)
+                .ToListAsync();
+
+            return new PagedResponse<WordCollection>
+            {
+                Data = data,
+                TotalRecords = totalRecords,
+                PageNumber = request.PageNumber,
+                PageSize = request.PageSize
+            };
+        }
+
         public async Task<WordCollection?> UpdateWordCollectionAsync(int id, WordCollection wordCollection)
         {
             try

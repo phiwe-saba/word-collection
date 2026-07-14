@@ -12,5 +12,6 @@ namespace word_collection.Orchestration.Interface
         Task<WordCollection?> UpdateWordCollectionAsync(int id, WordCollection wordCollection);
         Task<bool> DeleteWordAsync(int id);
         IEnumerable<string> GetWordTypes();
+        Task<PagedResponse<WordCollection>> SearchWordsAsync(WordFilterRequest request);
     }
 }

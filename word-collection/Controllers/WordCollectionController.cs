@@ -130,5 +130,20 @@ namespace word_collection.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected error occured.");
             }
         }
+
+        [HttpPost("search")]
+        public async Task<ActionResult<PagedResponse<WordCollection>>> SearchWords([FromBody] WordFilterRequest request)
+        {
+            try
+            {
+                var results = await _wordCollectionOrchestration.SearchWordsAsync(request);
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to search");
+                return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected error occured.");
+            }
+        }
     }
 }
