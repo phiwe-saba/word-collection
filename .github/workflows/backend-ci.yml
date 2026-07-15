@@ -3,14 +3,14 @@ name: Backend CI
 on:
   push:
     branches:
-      - main
-      - feature/word-collection-changes
+      - master
+      - feature/*
 
 
   pull_request:
     branches:
-      - main
-      - feature/word-collection-changes
+      - master
+      - feature/*
 
 
 jobs:
@@ -27,7 +27,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 8.0.x
+          dotnet-version: 8.0
 
       - name: Restore Packages
         run: dotnet restore
